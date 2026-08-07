@@ -1,19 +1,33 @@
 name: Build APK
-
 on: push
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: kivy/buildozer:latest
     steps:
       - uses: actions/checkout@v3
-      - name: Build APK
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Buildozer
         run: |
-          buildozer android debug
-      - name: Upload APK
-        uses: actions/upload-artifact@v3
+          pip install --upgrade buildozer
+          sudo apt update
+          sudo apt install -y autoconf automake libtool cmake libncurses5-dev libssl-dev openjdk-17-jdk
+
+      - name: Download NDK manually (25c)
+        run: |
+          wget -q https://dl.google.com/android/repository/android-ndk-r25c-linux.zip -O /tmp/ndk.zip
+          unzip -q /tmp/ndk.zip -d $HOME/.buildozer/android/platform/
+
+      - name: Build APK
+        run: buildozer android debug
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
         with:
           name: APK
           path: bin/*.apk
