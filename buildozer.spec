@@ -14,5 +14,4 @@ android.minapi = 21
 android.ndk = 25c
 android.accept_sdk_license = True
 p4a.branch = master
-# Solo arquitectura 64 bits (más rápida)
 android.arch = arm64-v8a
