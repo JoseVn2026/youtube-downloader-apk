@@ -22,8 +22,8 @@ def preparar_ffmpeg():
     """Copia el binario ffmpeg incluido en la app a almacenamiento externo y lo hace ejecutable."""
     if not os.path.exists(FFMPEG_PATH):
         os.makedirs(FFMPEG_DIR, exist_ok=True)
-        # El binario se incluye como 'data/ffmpeg' (ver buildozer.spec)
-        src = os.path.join(os.path.dirname(__file__), 'data', 'ffmpeg')
+        # El binario se incluye como 'ffmpeg_bin/ffmpeg' (ver buildozer.spec)
+        src = os.path.join(os.path.dirname(__file__), 'ffmpeg_bin', 'ffmpeg')
         if os.path.exists(src):
             shutil.copy(src, FFMPEG_PATH)
             os.chmod(FFMPEG_PATH, 0o755)
