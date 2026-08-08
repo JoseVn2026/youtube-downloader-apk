@@ -15,13 +15,11 @@ jobs:
       - name: Instalar Buildozer
         run: pip install buildozer
 
-      - name: Descargar NDK 25c (en la ubicación esperada por Buildozer)
+      - name: Descargar NDK 25c
         run: |
           mkdir -p $HOME/.buildozer/android/platform
           wget -q https://dl.google.com/android/repository/android-ndk-r25c-linux.zip -O /tmp/ndk.zip
           unzip -q /tmp/ndk.zip -d $HOME/.buildozer/android/platform/
-          # Verificar que la carpeta tenga el nombre exacto "android-ndk-r25c"
-          ls -la $HOME/.buildozer/android/platform/
 
       - name: Configurar variable de entorno para el NDK
         run: echo "ANDROIDNDK=$HOME/.buildozer/android/platform/android-ndk-r25c" >> $GITHUB_ENV
