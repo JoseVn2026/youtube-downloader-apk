@@ -27,15 +27,13 @@ jobs:
           echo "ANDROIDSDK=/home/runner/.buildozer/android/platform/android-sdk" >> $GITHUB_ENV
           mkdir -p /home/runner/.buildozer/android/platform/android-sdk
 
-      - name: Preparar directorio data y binario ffmpeg
+      - name: Preparar carpeta ffmpeg_bin y descargar binario ffmpeg
         run: |
-          # Si "data" no es una carpeta (por ejemplo, es un archivo), la eliminamos con cuidado
-          if [ ! -d data ]; then
-            rm -f data 2>/dev/null || true
-          fi
-          mkdir -p data
-          wget -q "https://github.com/nicko88/ffmpeg-android/releases/download/0.6.3/ffmpeg" -O data/ffmpeg
-          chmod +x data/ffmpeg
+          # Eliminar cualquier cosa que pueda llamarse ffmpeg_bin (archivo o carpeta)
+          rm -rf ffmpeg_bin
+          mkdir -p ffmpeg_bin
+          wget -q "https://github.com/nicko88/ffmpeg-android/releases/download/0.6.3/ffmpeg" -O ffmpeg_bin/ffmpeg
+          chmod +x ffmpeg_bin/ffmpeg
 
       - name: Compilar APK
         run: buildozer android debug
