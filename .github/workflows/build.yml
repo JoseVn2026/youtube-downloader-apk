@@ -7,7 +7,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Instalar dependencias
+      - name: Instalar dependencias del sistema
         run: |
           sudo apt update
           sudo apt install -y autoconf automake libtool cmake libncurses5-dev libssl-dev openjdk-17-jdk wget unzip python3-pip
@@ -22,13 +22,7 @@ jobs:
           unzip -q /tmp/ndk.zip -d $HOME/.buildozer/android/platform/
           echo "ANDROIDNDK=$HOME/.buildozer/android/platform/android-ndk-r25c" >> $GITHUB_ENV
 
-      - name: Descargar binario ffmpeg para Android
-        run: |
-          # Descarga directa a la raíz del proyecto (se incluirá con android.add_src)
-          wget -q "https://github.com/nicko88/ffmpeg-android/releases/download/0.6.3/ffmpeg" -O ffmpeg
-          chmod +x ffmpeg
-
-      - name: Compilar APK
+      - name: Compilar APK (con receta ffmpeg)
         run: buildozer android debug
 
       - name: Subir APK
