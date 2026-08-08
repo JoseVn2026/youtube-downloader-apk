@@ -1,4 +1,8 @@
-import os, re, sys, threading
+import os
+import re
+import sys
+import threading
+import shutil
 import yt_dlp
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
@@ -8,9 +12,24 @@ from kivy.uix.button import Button
 from kivy.uix.spinner import Spinner
 from kivy.uix.progressbar import ProgressBar
 from kivy.clock import Clock
+from kivy.utils import platform
 
-# La ruta a ffmpeg se obtiene automáticamente en Android gracias al recipe
-FFMPEG_PATH = 'ffmpeg'
+# Ruta donde extraeremos ffmpeg
+FFMPEG_DIR = os.path.join(os.environ.get('EXTERNAL_STORAGE', '/sdcard'), 'ffmpeg_bin')
+FFMPEG_PATH = os.path.join(FFMPEG_DIR, 'ffmpeg')
+
+def preparar_ffmpeg():
+    """Copia el binario ffmpeg incluido en la app a almacenamiento externo y lo hace ejecutable."""
+    if not os.path.exists(FFMPEG_PATH):
+        os.makedirs(FFMPEG_DIR, exist_ok=True)
+        # El binario se incluye como 'data/ffmpeg' (ver buildozer.spec)
+        src = os.path.join(os.path.dirname(__file__), 'data', 'ffmpeg')
+        if os.path.exists(src):
+            shutil.copy(src, FFMPEG_PATH)
+            os.chmod(FFMPEG_PATH, 0o755)
+
+# Ejecutar al importar
+preparar_ffmpeg()
 
 def descargar_video(url, formato_id, destino, progress_callback, done_callback):
     def hook(d):
@@ -42,30 +61,24 @@ class YouTubeApp(App):
         self.title = "YouTube Downloader"
         layout = BoxLayout(orientation='vertical', padding=10, spacing=10)
 
-        # URL
         layout.add_widget(Label(text="URL del video:", size_hint=(1, 0.1)))
         self.url_input = TextInput(hint_text="Pega el enlace aquí", size_hint=(1, 0.1))
         layout.add_widget(self.url_input)
 
-        # Botón analizar
         self.btn_analizar = Button(text="🔍 Analizar", size_hint=(1, 0.1))
         self.btn_analizar.bind(on_press=self.analizar)
         layout.add_widget(self.btn_analizar)
 
-        # Spinner de calidad
         self.spinner = Spinner(text='Primero analiza', values=[], size_hint=(1, 0.1))
         layout.add_widget(self.spinner)
 
-        # Progreso descarga
         self.progress = ProgressBar(max=100, value=0, size_hint=(1, 0.1))
         layout.add_widget(self.progress)
 
-        # Botón descargar
         self.btn_descargar = Button(text="⬇️ Descargar", size_hint=(1, 0.1), disabled=True)
         self.btn_descargar.bind(on_press=self.descargar)
         layout.add_widget(self.btn_descargar)
 
-        # Estado
         self.estado = Label(text="Listo", size_hint=(1, 0.1))
         layout.add_widget(self.estado)
 
