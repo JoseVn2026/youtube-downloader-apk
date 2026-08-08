@@ -14,5 +14,4 @@ android.minapi = 21
 android.ndk = 25c
 android.accept_sdk_license = True
 p4a.branch = master
-# Incluir el binario ffmpeg desde la carpeta ffmpeg_bin
 android.add_src = ffmpeg_bin
