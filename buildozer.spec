@@ -5,7 +5,7 @@ package.domain = com.example.ytdownloader
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 version = 1.0
-requirements = python3,kivy==2.1.0,yt-dlp,android
+requirements = python3,kivy==2.1.0,yt-dlp,ffmpeg,android
 orientation = portrait
 fullscreen = 0
 android.permissions = INTERNET, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE
@@ -14,7 +14,5 @@ android.minapi = 21
 android.ndk = 25c
 android.accept_sdk_license = True
 p4a.branch = master
-# Solo compila para 64 bits (más rápido, menos errores)
+# Solo arquitectura 64 bits (más rápida)
 android.arch = arm64-v8a
-# Incluye el binario ffmpeg (debe estar en la raíz del proyecto)
-android.add_src = .
