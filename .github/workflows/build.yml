@@ -20,7 +20,6 @@ jobs:
           mkdir -p /home/runner/.buildozer/android/platform
           wget -q https://dl.google.com/android/repository/android-ndk-r25c-linux.zip -O /tmp/ndk.zip
           unzip -q /tmp/ndk.zip -d /home/runner/.buildozer/android/platform/
-          echo "NDK descargado correctamente"
 
       - name: Configurar variables de entorno para Buildozer
         run: |
@@ -28,9 +27,12 @@ jobs:
           echo "ANDROIDSDK=/home/runner/.buildozer/android/platform/android-sdk" >> $GITHUB_ENV
           mkdir -p /home/runner/.buildozer/android/platform/android-sdk
 
-      - name: Descargar binario ffmpeg para Android
+      - name: Preparar directorio data y binario ffmpeg
         run: |
-          rm -rf data
+          # Si "data" no es una carpeta (por ejemplo, es un archivo), la eliminamos con cuidado
+          if [ ! -d data ]; then
+            rm -f data 2>/dev/null || true
+          fi
           mkdir -p data
           wget -q "https://github.com/nicko88/ffmpeg-android/releases/download/0.6.3/ffmpeg" -O data/ffmpeg
           chmod +x data/ffmpeg
