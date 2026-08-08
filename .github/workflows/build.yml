@@ -30,6 +30,7 @@ jobs:
 
       - name: Descargar binario ffmpeg para Android
         run: |
+          rm -rf data
           mkdir -p data
           wget -q "https://github.com/nicko88/ffmpeg-android/releases/download/0.6.3/ffmpeg" -O data/ffmpeg
           chmod +x data/ffmpeg
