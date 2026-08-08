@@ -14,22 +14,9 @@ from kivy.uix.progressbar import ProgressBar
 from kivy.clock import Clock
 from kivy.utils import platform
 
-# Ruta donde extraeremos ffmpeg
-FFMPEG_DIR = os.path.join(os.environ.get('EXTERNAL_STORAGE', '/sdcard'), 'ffmpeg_bin')
-FFMPEG_PATH = os.path.join(FFMPEG_DIR, 'ffmpeg')
-
-def preparar_ffmpeg():
-    """Copia el binario ffmpeg incluido en la app a almacenamiento externo y lo hace ejecutable."""
-    if not os.path.exists(FFMPEG_PATH):
-        os.makedirs(FFMPEG_DIR, exist_ok=True)
-        # El binario se incluye como 'ffmpeg_bin/ffmpeg' (ver buildozer.spec)
-        src = os.path.join(os.path.dirname(__file__), 'ffmpeg_bin', 'ffmpeg')
-        if os.path.exists(src):
-            shutil.copy(src, FFMPEG_PATH)
-            os.chmod(FFMPEG_PATH, 0o755)
-
-# Ejecutar al importar
-preparar_ffmpeg()
+# En Android, el binario ffmpeg compilado por la receta estará disponible en el PATH.
+# Si no, se puede forzar la ubicación típica.
+FFMPEG_PATH = "ffmpeg"  # yt-dlp lo buscará en PATH automáticamente
 
 def descargar_video(url, formato_id, destino, progress_callback, done_callback):
     def hook(d):
@@ -48,7 +35,7 @@ def descargar_video(url, formato_id, destino, progress_callback, done_callback):
             'outtmpl': destino,
             'merge_output_format': 'mp4',
             'progress_hooks': [hook],
-            'ffmpeg_location': FFMPEG_PATH,
+            'ffmpeg_location': FFMPEG_PATH,   # se usará el ffmpeg del sistema
             'quiet': True,
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
