@@ -1,8 +1,6 @@
 import os
 import re
-import sys
 import threading
-import shutil
 import yt_dlp
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
@@ -12,11 +10,9 @@ from kivy.uix.button import Button
 from kivy.uix.spinner import Spinner
 from kivy.uix.progressbar import ProgressBar
 from kivy.clock import Clock
-from kivy.utils import platform
 
-# En Android, el binario ffmpeg compilado por la receta estará disponible en el PATH.
-# Si no, se puede forzar la ubicación típica.
-FFMPEG_PATH = "ffmpeg"  # yt-dlp lo buscará en PATH automáticamente
+# En Android, el ffmpeg compilado por la receta estará disponible en el PATH
+FFMPEG_PATH = "ffmpeg"
 
 def descargar_video(url, formato_id, destino, progress_callback, done_callback):
     def hook(d):
@@ -35,7 +31,7 @@ def descargar_video(url, formato_id, destino, progress_callback, done_callback):
             'outtmpl': destino,
             'merge_output_format': 'mp4',
             'progress_hooks': [hook],
-            'ffmpeg_location': FFMPEG_PATH,   # se usará el ffmpeg del sistema
+            'ffmpeg_location': FFMPEG_PATH,
             'quiet': True,
         }
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
