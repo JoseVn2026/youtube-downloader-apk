@@ -27,14 +27,6 @@ jobs:
           echo "ANDROIDSDK=/home/runner/.buildozer/android/platform/android-sdk" >> $GITHUB_ENV
           mkdir -p /home/runner/.buildozer/android/platform/android-sdk
 
-      - name: Preparar ffmpeg_bin (sin errores)
-        run: |
-          # Si ffmpeg_bin NO es un directorio (p.ej. es un archivo), lo borramos sin fallar
-          test -d ffmpeg_bin || rm -f ffmpeg_bin
-          mkdir -p ffmpeg_bin
-          wget -q "https://github.com/nicko88/ffmpeg-android/releases/download/0.6.3/ffmpeg" -O ffmpeg_bin/ffmpeg
-          chmod +x ffmpeg_bin/ffmpeg
-
       - name: Compilar APK
         run: buildozer android debug
 
