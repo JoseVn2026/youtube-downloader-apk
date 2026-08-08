@@ -4,13 +4,17 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: kivy/buildozer:latest
+      options: --user root
     steps:
       - uses: actions/checkout@v3
 
-      - name: Build with Buildozer Action
-        uses: hmsjy2017/buildozer-action@v1
+      - name: Compilar APK
+        run: buildozer android debug
+
+      - name: Subir APK
+        uses: actions/upload-artifact@v4
         with:
-          # Solo compilar para 64 bits (más rápido y compatible)
-          arch: arm64-v8a
-          # Aceptar licencias automáticamente
-          accept-sdk-license: true
+          name: APK
+          path: bin/*.apk
