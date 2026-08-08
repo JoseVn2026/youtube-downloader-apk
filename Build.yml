@@ -1,0 +1,39 @@
+name: Build APK
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Instalar dependencias del sistema
+        run: |
+          sudo apt update
+          sudo apt install -y autoconf automake libtool cmake libncurses5-dev libssl-dev openjdk-17-jdk wget unzip python3-pip
+
+      - name: Instalar Buildozer
+        run: pip install buildozer
+
+      - name: Descargar NDK 25c y SDK platform 33
+        run: |
+          mkdir -p $HOME/.buildozer/android/platform
+          wget -q https://dl.google.com/android/repository/android-ndk-r25c-linux.zip -O /tmp/ndk.zip
+          unzip -q /tmp/ndk.zip -d $HOME/.buildozer/android/platform/
+          # Instalar platform android-33 y build-tools 33.0.2
+          yes | $HOME/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager --sdk_root=$HOME/.buildozer/android/platform/android-sdk "platforms;android-33" "build-tools;33.0.2"
+
+      - name: Descargar binario ffmpeg para Android
+        run: |
+          mkdir -p data
+          wget -q "https://github.com/nicko88/ffmpeg-android/releases/download/0.6.3/ffmpeg" -O data/ffmpeg
+          chmod +x data/ffmpeg
+
+      - name: Compilar APK
+        run: buildozer android debug
+
+      - name: Subir APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: APK
+          path: bin/*.apk
