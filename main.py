@@ -9,7 +9,6 @@ from kivy.uix.spinner import Spinner
 from kivy.uix.progressbar import ProgressBar
 from kivy.clock import Clock
 
-# ffmpeg estará disponible en el PATH gracias a la receta
 FFMPEG_LOCATION = 'ffmpeg'
 
 def download_video(url, fmt, dest, prog_cb, done_cb):
