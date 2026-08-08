@@ -9,21 +9,8 @@ from kivy.uix.spinner import Spinner
 from kivy.uix.progressbar import ProgressBar
 from kivy.clock import Clock
 
-# El binario ffmpeg se incluirá en la app y se copiará a almacenamiento externo
-FFMPEG_EXTERNAL = "/sdcard/ffmpeg_bin/ffmpeg"
-
-def preparar_ffmpeg():
-    """Copia el binario incluido al almacenamiento externo (solo la primera vez)."""
-    if not os.path.exists(FFMPEG_EXTERNAL):
-        os.makedirs(os.path.dirname(FFMPEG_EXTERNAL), exist_ok=True)
-        src = os.path.join(os.path.dirname(__file__), "ffmpeg")
-        if os.path.exists(src):
-            with open(src, "rb") as f_in:
-                with open(FFMPEG_EXTERNAL, "wb") as f_out:
-                    f_out.write(f_in.read())
-            os.chmod(FFMPEG_EXTERNAL, 0o755)
-
-preparar_ffmpeg()
+# ffmpeg estará disponible en el PATH gracias a la receta
+FFMPEG_LOCATION = 'ffmpeg'
 
 def download_video(url, fmt, dest, prog_cb, done_cb):
     def hook(d):
@@ -39,7 +26,7 @@ def download_video(url, fmt, dest, prog_cb, done_cb):
         'outtmpl': dest,
         'merge_output_format': 'mp4',
         'progress_hooks': [hook],
-        'ffmpeg_location': FFMPEG_EXTERNAL,
+        'ffmpeg_location': FFMPEG_LOCATION,
         'quiet': True,
     }
     try:
