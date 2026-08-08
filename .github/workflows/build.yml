@@ -3,30 +3,14 @@ on: push
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - name: Instalar dependencias del sistema
-        run: |
-          sudo apt update
-          sudo apt install -y autoconf automake libtool cmake libncurses5-dev libssl-dev openjdk-17-jdk wget unzip python3-pip
-
-      - name: Instalar Buildozer
-        run: pip install buildozer
-
-      - name: Descargar NDK 25c
-        run: |
-          mkdir -p $HOME/.buildozer/android/platform
-          wget -q https://dl.google.com/android/repository/android-ndk-r25c-linux.zip -O /tmp/ndk.zip
-          unzip -q /tmp/ndk.zip -d $HOME/.buildozer/android/platform/
-          echo "ANDROIDNDK=$HOME/.buildozer/android/platform/android-ndk-r25c" >> $GITHUB_ENV
-
-      - name: Compilar APK (con receta ffmpeg)
-        run: buildozer android debug
-
-      - name: Subir APK
-        uses: actions/upload-artifact@v4
+      - name: Build with Buildozer Action
+        uses: hmsjy2017/buildozer-action@v1
         with:
-          name: APK
-          path: bin/*.apk
+          # Solo compilar para 64 bits (más rápido y compatible)
+          arch: arm64-v8a
+          # Aceptar licencias automáticamente
+          accept-sdk-license: true
